@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
@@ -45,7 +46,7 @@ public class CryptoPriceServiceTest {
 
         // Mock the response from RestTemplate
         ResponseEntity<Map<String, Map<String, Double>>>responseEntity = new ResponseEntity<>(responseBody, HttpStatus.OK);
-        when(restTemplate.exchange(anyString(),eq(HttpMethod.GET),eq(null),any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
+        when(restTemplate.exchange(anyString(),eq(HttpMethod.GET),isNull(),any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
 
         //Act
         double result = cryptoPriceService.getCryptoPrice(cryptoName);
@@ -54,4 +55,17 @@ public class CryptoPriceServiceTest {
         assertEquals(63306.0,result);
     }
 
+    @Test
+    void testGetCryptoPriceFailure(){
+        String cryptoName = "invalidrypto";
+        String url = "https://api.coingecko.com/api/v3/simple/price?ids=" + cryptoName + "&vs_currencies=usd";
+
+        ResponseEntity<Map<String, Map<String, Double>>> responseEntity = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), isNull(), any(ParameterizedTypeReference.class)))
+                .thenReturn(responseEntity);
+
+        assertThrows(RuntimeException.class, () -> {
+            cryptoPriceService.getCryptoPrice(cryptoName);
+        });
+    }
 }

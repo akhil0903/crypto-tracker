@@ -16,7 +16,10 @@ public class CryptoTrackerService {
     @Autowired
     private CryptoSubscriptionRepository subscriptionRepository;
 
-    @Scheduled(fixedRate = 30000)
+    @Autowired
+    private EmailService emailService;
+
+    @Scheduled(fixedRate = 30000) // Runs every 5 minutes
     public void trackPrices(){
         List<CryptoSubscription> subscriptions = subscriptionRepository.findAll();
 
@@ -24,7 +27,12 @@ public class CryptoTrackerService {
             double currentPrice = cryptoPriceService.getCryptoPrice(subscription.getCryptoName());
 
             if (currentPrice >= subscription.getThresholdPrice() ){
-                System.out.println("Price alert: "+subscription.getCryptoName() + "has reached $"+ currentPrice);
+
+                String subject = "Price Alert!! - " + subscription.getCryptoName();
+                String body = "The price of " + subscription.getCryptoName() + " has reached $" + currentPrice;
+
+                emailService.sendNotification(subscription.getEmail(),subject,body);
+
             }
         }
 
