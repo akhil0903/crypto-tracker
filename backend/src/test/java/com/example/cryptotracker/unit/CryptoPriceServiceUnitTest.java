@@ -1,4 +1,4 @@
-package com.example.cryptotracker;
+package com.example.cryptotracker.unit;
 
 import com.example.cryptotracker.service.CryptoPriceService;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
-public class CryptoPriceServiceTest {
+public class CryptoPriceServiceUnitTest {
     @InjectMocks
     private CryptoPriceService cryptoPriceService;
 
@@ -34,7 +34,7 @@ public class CryptoPriceServiceTest {
 
     @Test
     void testGetCryptoPrice(){
-        //Arange
+        //Arrange
         String cryptoName = "bitcoin";
         //String url ="https://api.coingecko.com/api/v3/simple/price?ids=" + cryptoName + "&vs_currencies=usd";
 

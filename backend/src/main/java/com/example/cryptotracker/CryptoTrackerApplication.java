@@ -21,4 +21,9 @@ public class CryptoTrackerApplication {
 				.build();
 	}
 
+	@Bean
+	public RestTemplate restTemplate() {
+		return new RestTemplate();
+	}
+
 }
